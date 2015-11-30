@@ -5,6 +5,8 @@
  */
 package gomoku;
 
+import java.util.Scanner;
+
 /**
  *
  * @author acel
@@ -16,15 +18,20 @@ public class Gomoku {
      */
     public static void main(String[] args) {
         Board board = new Board();
+        Player p_1 = new Player("Acel", 'Z');
         
-        for(int k=0; k<5; k++){
-            board.set(k, 0, 'A');
+        while(!board.wins(p_1.getSymbol())){
+            Scanner in = new Scanner(System.in);
+            int row = in.nextInt();
+            int col = in.nextInt();
+            if(row>=0 && row<board.getSize() && col>=0 && col<board.getSize()){
+                board.setTile(row,col,p_1.getSymbol());
+                board.show();
+            } else {
+                System.out.println("Input is wrong");
+            }
         }
-        
-        board.show();
-        if(board.winsVertical('A')){
-            System.out.println("AB");
-        }
+        System.out.println(p_1.getNickname() + " wins!");
     }
     
 }
