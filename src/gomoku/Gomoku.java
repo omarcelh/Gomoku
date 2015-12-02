@@ -131,6 +131,40 @@ public class Gomoku {
         }
         return flag;
     }
+    
+    public int play(){
+        int i = 0;
+        int winnerIndex = -1;
+        Scanner scanner = new Scanner(System.in);
+        while(i<numPlayer){
+            System.out.println("****************************************************************\n");
+            System.out.println(getPlayer(i).getNickname() + " turn!");
+            int row = scanner.nextInt();
+            int col = scanner.nextInt();
+            if(row>=0 && row<getBoard().getSize() && col>=0 && col<getBoard().getSize() && getBoard().isTileEmpty(row, col)){
+                getBoard().setTile(row,col,getPlayer(i).getSymbol());
+                getBoard().show();
+            } else {
+                while(!(row>=0 && row<getBoard().getSize() && col>=0 && col<getBoard().getSize() && getBoard().isTileEmpty(row, col))){
+                    System.out.println("Wrong input!");
+                    row = scanner.nextInt();
+                    col = scanner.nextInt();
+                }              
+                getBoard().setTile(row,col,getPlayer(i).getSymbol());
+                getBoard().show();
+            }
+            if(getBoard().wins(getPlayer(i).getSymbol())){
+                winnerIndex = i;
+                break;
+            }
+            if(i == (getPlayers().length-1)){
+                i = 0;
+            } else {
+                i++;
+            }
+        }
+        return winnerIndex;
+    }
     /**
      * @param args the command line arguments
      */
@@ -147,35 +181,8 @@ public class Gomoku {
         Gomoku gomoku = new Gomoku(numPlayer);
         gomoku.addPlayers();
         
-        int i =0;
-        int winnerIndex = -1;
-        while(i<numPlayer){
-            System.out.println("****************************************************************\n");
-            System.out.println(gomoku.getPlayer(i).getNickname() + " turn!");
-            int row = scanner.nextInt();
-            int col = scanner.nextInt();
-            if(row>=0 && row<gomoku.getBoard().getSize() && col>=0 && col<gomoku.getBoard().getSize() && gomoku.getBoard().isTileEmpty(row, col)){
-                gomoku.getBoard().setTile(row,col,gomoku.getPlayer(i).getSymbol());
-                gomoku.getBoard().show();
-            } else {
-                while(!(row>=0 && row<gomoku.getBoard().getSize() && col>=0 && col<gomoku.getBoard().getSize() && gomoku.getBoard().isTileEmpty(row, col))){
-                    System.out.println("Wrong input!");
-                    row = scanner.nextInt();
-                    col = scanner.nextInt();
-                }              
-                gomoku.getBoard().setTile(row,col,gomoku.getPlayer(i).getSymbol());
-                gomoku.getBoard().show();
-            }
-            if(gomoku.getBoard().wins(gomoku.getPlayer(i).getSymbol())){
-                winnerIndex = i;
-                break;
-            }
-            if(i == (gomoku.getPlayers().length-1)){
-                i = 0;
-            } else {
-                i++;
-            }
-        }
+        int winnerIndex = gomoku.play();
+        
         System.out.println(gomoku.getPlayer(winnerIndex).getNickname() + " wins!");
     }
     
