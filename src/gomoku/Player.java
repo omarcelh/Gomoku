@@ -6,7 +6,7 @@
 package gomoku;
 
 /**
- *
+ * Player class which consists of nickname and symbol that are used in game
  * @author acel
  */
 public class Player {
@@ -17,15 +17,20 @@ public class Player {
     public String nickname;
 
     /**
-     *
-     * @return
+     * Symbol the player has in playing gomoku
+     */
+    public char symbol;
+    
+    /**
+     * Nickname getter
+     * @return nickname in String
      */
     public String getNickname() {
         return nickname;
     }
 
     /**
-     *
+     * Nickname setter
      * @param nickname
      */
     public void setNickname(String nickname) {
@@ -33,7 +38,7 @@ public class Player {
     }
 
     /**
-     *
+     * Symbol getter
      * @return
      */
     public char getSymbol() {
@@ -41,17 +46,13 @@ public class Player {
     }
 
     /**
-     *
+     * Symbol setter
      * @param symbol
      */
     public void setSymbol(char symbol) {
         this.symbol = symbol;
     }
 
-    /**
-     * Symbol the player has in playing gomoku
-     */
-    public char symbol;
     
     /**
      * Constructor

@@ -6,7 +6,7 @@
 package gomoku;
 
 /**
- *
+ * Class Board with 20 row and 20 column of char
  * @author acel
  */
 public final class Board {
@@ -14,13 +14,19 @@ public final class Board {
     /**
      * table of char
      */
-    public char[][] tile;
+    private char[][] tile;
 
+    /**
+     * char to determine whether tile is empty or not
+     */
+    private final char emptyMark = '-';
+    
     /**
      * board size (size row * size column)
      */
     public final int size = 20;
-
+    
+    
     /**
      * size getter
      * @return board size
@@ -31,22 +37,48 @@ public final class Board {
 
     /**
      * tile getter
-     * @param i row index
-     * @param j column index
+     * @param row
+     * @param col
      * @return
      */
-    public char getTile(int i, int j) {
-        return tile[i][j];
+    public char getTile(int row, int col) {
+        return tile[row][col];
     }
 
     /**
      * tile setter at [i,j]
-     * @param i row index
-     * @param j column index
+     * @param row
+     * @param col
      * @param symbol
      */
-    public void setTile(int i, int j, char symbol) {
-        tile[i][j] = symbol;
+    public void setTile(int row, int col, char symbol) {
+        tile[row][col] = symbol;
+    }
+    
+    /**
+     * To check whether tile is empty or not
+     * @param row
+     * @param col
+     * @return true if tile with row=i and col=j is emptyMark or false if it is not
+     */
+    public boolean isTileEmpty(int row, int col){
+        return (tile[row][col] == emptyMark);
+    }
+    
+    /**
+     * To check whether tile is full or not
+     * @return true if all tiles are not emptyMark, and false if at least one of it is emptyMark
+     */
+    public boolean isTileFull(){
+        boolean flag = true;
+        int i=0;
+        int j=0;
+        while(i<size && flag){
+            while(j<size && flag){
+                flag = flag && (getTile(i,j) != emptyMark);
+            }
+        }
+        return flag;
     }
 
     /**
@@ -58,7 +90,7 @@ public final class Board {
         //initialize board
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                setTile(i, j, '-');
+                setTile(i, j, emptyMark);
             }
         }
     }
@@ -68,16 +100,25 @@ public final class Board {
      * Create size row and size column of char
      */
     public void show() {
+        System.out.printf("%2s", "");
+        for(int j=0; j<size; j++){
+            System.out.printf("%3s", j);
+        }
+        System.out.println(" (j)");
+        
         for (int i = 0; i < size; i++) {
+            System.out.printf("%2d", i);
             for (int j = 0; j < size; j++) {
-                System.out.print(getTile(i, j) + " ");
+                System.out.printf("%3s", getTile(i, j));
             }
             System.out.println();
         }
+        
+        System.out.println("(i)\n");
     }
 
     /**
-     *
+     * Function to determine whether there are at least 5 consecutive symbol on the board 
      * @param symbol char to be checked in board
      * @return true if board has 5 or more consecutive symbol
      */
@@ -86,7 +127,7 @@ public final class Board {
     }
 
     /**
-     *
+     * Function to determine whether there are at least 5 consecutive symbol on the board horizontally
      * @param symbol char to be checked in board
      * @return true if board has 5 or more consecutive symbol horizontally
      */
@@ -117,7 +158,7 @@ public final class Board {
     }
 
     /**
-     *
+     * Function to determine whether there are at least 5 consecutive symbol on the board vertically
      * @param symbol char to be checked in board
      * @return true if board has 5 or more consecutive symbol vertically
      */
@@ -147,7 +188,7 @@ public final class Board {
     }
 
     /**
-     *
+     * Function to determine whether there are at least 5 consecutive symbol on the board diagonally
      * @param symbol char to be checked in board
      * @return true if board has 5 or more consecutive symbol diagonally
      */
@@ -157,7 +198,7 @@ public final class Board {
         int i, j;
         //northeast
         //[0][0] to [19][19]
-        i = 0;
+        i = 4;
         j = 0;
         while ((i >= 0 && i < size) && (j >= 0 && j < size) && !flag) {
             if (getTile(i, j) == symbol) {
@@ -185,7 +226,7 @@ public final class Board {
 
         //northwest
         //[0][19] to [19][0]
-        i = 0;
+        i = 4;
         j = size - 1;
         while ((i >= 0 && i < size) && (j >= 0 && j < size) && !flag) {
             if (getTile(i, j) == symbol) {
