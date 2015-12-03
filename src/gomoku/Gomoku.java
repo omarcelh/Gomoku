@@ -91,14 +91,15 @@ public class Gomoku {
             String player_name = scanner.next();
             System.out.print("Symbol: ");
             char player_symbol = scanner.next().charAt(0);
-            
-            while(!addPlayer(player_name, player_symbol, i)){
+            boolean flag = addPlayer(player_name, player_symbol, i);
+            while(!flag){
                 System.out.println("Wrong input!");
                 System.out.println("Player-" + i);
                 System.out.print("Name: ");
                 player_name = scanner.next();
                 System.out.print("Symbol: ");
                 player_symbol = scanner.next().charAt(0);
+                flag = addPlayer(player_name, player_symbol, i);
             }   
         }
         System.out.println();
@@ -112,19 +113,18 @@ public class Gomoku {
      * @return true if player is unique, false otherwise
      */
     public boolean addPlayer(String nickname, char symbol, int index){
-        boolean flag = false;
+        boolean flag = true;
         if(index == 0){
             players[index] = new Player(nickname, symbol);
-            flag = true;
         } else {
             int i=0;
-            while(!flag && (i<index)){
+            while(flag && (i<index)){
                 flag = flag 
-                        || (players[i].getNickname().equals(nickname)) 
-                        || (players[i].getSymbol() == symbol);
+                        && !(players[i].getNickname().equals(nickname)) 
+                        && !(players[i].getSymbol() == symbol);
                 i++;
             }
-            if(!flag){
+            if(flag){
                 players[i] = new Player(nickname, symbol);
                 flag = true;
             } 
