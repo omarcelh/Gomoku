@@ -166,6 +166,7 @@ public class Client {
                     playerid = msg.getUserid();
                     roomid = msg.getRoomid();
                     display("Logged in to room number " + roomid + ". Your player id is: " + playerid);
+                    gui.showRoomList(msg.getMessage());
                     break;
                 }                
                 case MessageToClient.MOVE:
