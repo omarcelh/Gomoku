@@ -6,6 +6,8 @@
 package gomoku;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -13,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -27,6 +30,7 @@ public class ClientGUI extends javax.swing.JFrame {
         this.BoardSquares = new JButton[20][20];
         initComponents();
         initBoard();
+        this.pack();
         output = "";
     }
 
@@ -50,6 +54,7 @@ public class ClientGUI extends javax.swing.JFrame {
         StartButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1200, 700));
 
         LoginPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
@@ -100,6 +105,7 @@ public class ClientGUI extends javax.swing.JFrame {
                 .addComponent(LoginButton))
         );
 
+        BoardPanel.setEnabled(false);
         BoardPanel.setLayout(new java.awt.GridLayout(20, 20));
 
         LogArea.setColumns(20);
@@ -107,6 +113,7 @@ public class ClientGUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(LogArea);
 
         StartButton.setText("Start");
+        StartButton.setEnabled(false);
         StartButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 StartButtonMousePressed(evt);
@@ -124,7 +131,7 @@ public class ClientGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+                .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
@@ -142,7 +149,7 @@ public class ClientGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(StartButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
                     .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -174,11 +181,14 @@ public class ClientGUI extends javax.swing.JFrame {
         client = new Client(serverAddress, portNumber, username, symbol, this);
         
         client.start();
-                
-        LoginPanel.setVisible(false);
+        
+        LoginInput.setEnabled(false);
+        LoginButton.setEnabled(false);
+        StartButton.setEnabled(true);
+        BoardPanel.setEnabled(true);
     }
     
-    public void appendOutput(String msg) {
+    public void printLog(String msg) {
         output += msg + "\n";
         LogArea.setText(output);
     }
@@ -192,11 +202,16 @@ public class ClientGUI extends javax.swing.JFrame {
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {                
                 JButton b = new JButton();
+                /* Dimension d = new Dimension(5,5);
+                b.setPreferredSize(d); */
+                b.setHorizontalAlignment(SwingConstants.CENTER);
                 b.setMargin(buttonMargin);
                 ImageIcon icon = new ImageIcon(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
                 b.setIcon(icon);
                 b.setBackground(Color.WHITE);
-               
+                Font font = new Font("Tahoma", Font.BOLD, 10);
+                b.setFont(font);
+                
                 BoardSquares[j][i] = b;
                 final int row = j;
                 final int col = i;

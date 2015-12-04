@@ -67,7 +67,7 @@ public class Client {
     }
     
     private void display(String event) {
-        System.out.println(event);
+        gui.printLog(event);
     }
     
     void startGame() {
