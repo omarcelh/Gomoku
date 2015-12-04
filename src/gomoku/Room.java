@@ -1,8 +1,5 @@
-package gomoku.server;
+package gomoku;
 
-import gomoku.server.Chat;
-import gomoku.server.Game;
-import gomoku.server.Game.Player;
 import java.util.ArrayList;
 
 /*
@@ -17,10 +14,10 @@ import java.util.ArrayList;
  */
 public class Room {
     private String name;
-    private Game game = new Game();
+    private Gomoku game;
     private String status = "WAITING";
     private ArrayList<Player> players = new ArrayList<>();
-    private ArrayList<Chat> chats = new ArrayList<>();
+    // private ArrayList<Chat> chats = new ArrayList<>();
     private int turn = 0;
     
     public Room(String name){
@@ -39,11 +36,11 @@ public class Room {
         return players;
     }
     
-    public Game getGame() {
-        return Game;
+    public Gomoku getGame() {
+        return game;
     }
     
-    public void setGame(Game game) {
+    public void setGame(Gomoku game) {
         this.game = game;
     }
         
@@ -66,8 +63,8 @@ public class Room {
         if(players.size() < 3 && this.status.equals("READY")) 
             this.status = "WAITING";
     }
-       
-    public void getChatMessage() {
+    
+   /* public void getChatMessage() {
         String text = "";
         for(Chat chat : chats) 
             text += chat.getPlayer().getName() + " : " + chat.getMessage() + "\n";
@@ -89,7 +86,7 @@ public class Room {
     
     public void removeChat(Chat chat) {
         chats.remove(chat);
-    }
+    }*/
     
     public int getTurn() {
         return turn;

@@ -14,13 +14,14 @@ public class Server {
     private boolean keepAlive;
     private ArrayList<ClientThread> clients;
     private ArrayList<Player> players;
-    private Gomoku game;
+    private ArrayList<Gomoku> games;
     private static int clientCount;
 
     public Server(int port) {
         this.port = port;
         clients = new ArrayList<>();
         players = new ArrayList<>();
+        games = new ArrayList<>();
     }
 	
     public void start() {
@@ -101,16 +102,58 @@ public class Server {
         server.start();
     }
     
-    public void startGame() {
-        game = new Gomoku(clients.size());
-        for (int i = 0; i < clients.size(); ++i) {
-            game.addPlayer(players.get(i),i);
-            ClientThread ct = clients.get(i);
-            MessageToClient msg = new MessageToClient(MessageToClient.LOGGEDIN, 0, 0, i, players.get(i).getNickname(), players.get(i).getSymbol());
-            display(players.get(i).getNickname() + " joined the game.");
-            ct.writeMsg(msg);
+    public int addRoom(int playerid, String gamename) {        
+        Gomoku game = new Gomoku(gamename);        
+        game.addPlayer(players.get(playerid));      
+        games.add(game);
+        
+        ClientThread ct = clients.get(playerid);
+        MessageToClient msg = new MessageToClient(MessageToClient.LOGGEDIN, 0, 0, playerid, games.size()-1, players.get(playerid).getNickname(), players.get(playerid).getSymbol());
+        display(players.get(playerid).getNickname() + " created room " + gamename);
+        ct.writeMsg(msg);
+                
+        return games.size()-1;
+    } 
+    
+    public int joinRoom(int playerid, String roomname) {
+        int roomid = -1;
+        for (int i = 0; i < games.size(); i++) {
+            if (games.get(i).getRoomname().equals(roomname)) {
+                roomid = i;
+            }
         }
+        Gomoku game = games.get(roomid);
+        game.addPlayer(players.get(playerid));
+        
+        ClientThread ct = clients.get(playerid);
+        MessageToClient msg = new MessageToClient(MessageToClient.LOGGEDIN, 0, 0, playerid, roomid, players.get(playerid).getNickname(), players.get(playerid).getSymbol());
+        display(players.get(playerid).getNickname() + " joined room " + roomname);
+        ct.writeMsg(msg);
+        
+        return roomid;
+    }
+    
+    public void startGame(String roomname) {
+        int roomid = -1;
+        for (int i = 0; i < games.size(); i++) {
+            if (games.get(i).getRoomname().equals(roomname)) {
+                roomid = i;
+            }
+        }
+        Gomoku game = games.get(roomid);
         game.initGame();
+    }
+    
+    public void sendRoomList(int playerid) {
+        String RoomList = "";
+        for (int i = 0; i < games.size(); i++) {
+            RoomList += games.get(i).getRoomname() + " ";
+        }             
+        
+        ClientThread ct = clients.get(playerid);
+        MessageToClient msg = new MessageToClient(MessageToClient.ROOMLIST, 0, 0, 0, 0, RoomList, ' ');
+        display("Sending room list to " + players.get(playerid).getNickname());
+        ct.writeMsg(msg);
     }
     
     class ClientThread extends Thread {
@@ -156,23 +199,30 @@ public class Server {
                 }
 
                 switch(cm.getType()) {
-                    /* case MessageToServer.GETROOMLIST:
-                        sendRoomList();
+                    case MessageToServer.GETROOMLIST:
+                        sendRoomList(cm.getUserid());
+                        break;
                     case MessageToServer.CREATEROOM:
-                        writeMsg(new MessageToClient(MessageToClient.CREATEDROOM,createRoom(cm.getMessage()));
+                    {
+                        addRoom(cm.getUserid(),cm.getMessage());
+                        break;
+                    }
                     case MessageToServer.JOINROOM:
-                     */    
+                    {
+                        joinRoom(cm.getUserid(),cm.getMessage());
+                        break;
+                    }
                     case MessageToServer.STARTROOM:
                     {
-                        startGame();
+                        startGame(cm.getMessage());
                         break;
                     }
                     case MessageToServer.MOVE:
                     {                         
-                        MessageToClient mc = game.insertMove(cm.getParam1(), cm.getParam2(), cm.getParam3());
+                        MessageToClient mc = games.get(cm.getRoomid()).insertMove(cm.getRow(), cm.getCol(), cm.getUserid());
                         if (mc.getType() == MessageToClient.MOVE) {
                             broadcast(mc);
-                            MessageToClient isWin = game.wins(cm.getParam3());
+                            MessageToClient isWin = games.get(cm.getRoomid()).wins(cm.getUserid());
                             if (isWin.getType() == MessageToClient.WINNER) {
                                 broadcast(isWin);
                             }
@@ -201,7 +251,7 @@ public class Server {
             }
         }
 
-        private boolean writeMsg(MessageToClient msg) {
+        boolean writeMsg(MessageToClient msg) {
             if (!socket.isConnected()) {
                 close();
                 return false;

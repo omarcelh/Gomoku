@@ -5,6 +5,7 @@
  */
 package gomoku;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -14,10 +15,13 @@ import java.util.Scanner;
  */
 public class Gomoku {
 
+    static final int WAITING = 0, READY = 1, PLAYING = 2, FINISHED = 3;
+    private static int roomCount;
+    
     /**
      * Array of players
      */
-    private Player[] players;
+    private ArrayList<Player> players;
 
     /**
      * Gomoku board
@@ -29,14 +33,25 @@ public class Gomoku {
      */
     private int numPlayer;
     
+    private int roomid;
+    private int status = WAITING;
     private int currentTurn;
+    private String roomname;
     
     /**
      * Players getter
      * @return list of players
      */
-    public Player[] getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return players;
+    }
+    
+    public int getStatus() {
+        return status;
+    }
+    
+    public int getRoomid() {
+        return roomid;
     }
     
     /**
@@ -45,7 +60,7 @@ public class Gomoku {
      * @return player at index
      */
     public Player getPlayer(int index) {
-        return players[index];
+        return players.get(index);
     }
 
     /**
@@ -72,40 +87,20 @@ public class Gomoku {
         this.numPlayer = numPlayer;
     }
     
+    public String getRoomname() {
+        return roomname;
+    }
+    
     /**
      * Constructor with parameter
      * @param numPlayer
      */
-    public Gomoku(int numPlayer){
-        this.numPlayer = numPlayer;
+    public Gomoku(String gamename){
+        roomname = gamename;
         board = new Board();
-        players = new Player[this.numPlayer];
-    }
-    
-    /**
-     * Procedure to add players based on numPlayer
-     */
-    public void addPlayers(){
-        Scanner scanner = new Scanner(System.in);
-        for(int i=0; i<getNumPlayer(); i++){
-            System.out.println("Player-" + i);
-            System.out.print("Name: ");
-            String player_name = scanner.next();
-            System.out.print("Symbol: ");
-            char player_symbol = scanner.next().charAt(0);
-            boolean flag = addPlayer(player_name, player_symbol, i);
-            while(!flag){
-                System.out.println("Wrong input!");
-                System.out.println("Player-" + i);
-                System.out.print("Name: ");
-                player_name = scanner.next();
-                System.out.print("Symbol: ");
-                player_symbol = scanner.next().charAt(0);
-                flag = addPlayer(player_name, player_symbol, i);
-            }   
-        }
-        System.out.println();
-    }
+        players = new ArrayList<>();
+        roomid = ++roomCount;
+    }    
     
     /**
      * Adding player to list of players by checking previous players first
@@ -114,7 +109,7 @@ public class Gomoku {
      * @param index
      * @return true if player is unique, false otherwise
      */
-    public boolean addPlayer(String nickname, char symbol, int index){
+    /*public boolean addPlayer(String nickname, char symbol, int index){
         boolean flag = true;
         if(index == 0){
             players[index] = new Player(nickname, symbol);
@@ -132,26 +127,29 @@ public class Gomoku {
             } 
         }
         return flag;
-    }
+    }*/
     
-    public boolean addPlayer(Player player, int index) {
+    public int addPlayer(Player player) {
         boolean flag = true;
-        if(index == 0){
-            players[index] = player;
+        if(players.size() == 0){
+            players.add(player);
         } else {
             int i=0;
-            while(flag && (i<index)){
+            while(flag && (i<players.size())){
                 flag = flag 
-                        && !(players[i].getNickname().equals(player.getNickname())) 
-                        && !(players[i].getSymbol() == player.getSymbol());
+                        && !(players.get(i).getNickname().equals(player.getNickname())) 
+                        && !(players.get(i).getSymbol() == player.getSymbol());
                 i++;
             }
             if(flag){
-                players[i] = player;
+                players.add(player);
                 flag = true;
             } 
         }
-        return flag;
+        if (players.size() >= 3) {
+            status = READY;
+        }
+        return players.size();
     }
     
     /**
@@ -164,20 +162,24 @@ public class Gomoku {
     public MessageToClient insertMove(int row, int col, int playerid) {
         MessageToClient mt;
         Player p = getPlayer(playerid);
-        if (playerid == currentTurn) {
-            if (row>=0 && row<getBoard().getSize() && col>=0 && col<getBoard().getSize() && getBoard().isTileEmpty(row, col)) {            
-                getBoard().setTile(row,col,p.getSymbol());
-                mt = new MessageToClient(MessageToClient.MOVE, row, col, playerid, p.getNickname(), p.getSymbol());
-                if(currentTurn == (getPlayers().length-1)){
-                    currentTurn = 0;
+        if (status == PLAYING) {
+            if (playerid == currentTurn) {
+                if (row>=0 && row<getBoard().getSize() && col>=0 && col<getBoard().getSize() && getBoard().isTileEmpty(row, col)) {            
+                    getBoard().setTile(row,col,p.getSymbol());
+                    mt = new MessageToClient(MessageToClient.MOVE, row, col, playerid, 0, p.getNickname(), p.getSymbol());
+                    if(currentTurn == (getPlayers().size()-1)){
+                        currentTurn = 0;
+                    } else {
+                        currentTurn++;
+                    }
                 } else {
-                    currentTurn++;
+                    mt = new MessageToClient(MessageToClient.MOVEINVALID, 0, 0, 0, 0, "", ' ');
                 }
             } else {
-                mt = new MessageToClient(MessageToClient.MOVEINVALID, 0, 0, 0, "", ' ');
+                mt = new MessageToClient(MessageToClient.NOTYOURTURN, 0, 0, 0, 0, "", ' ');
             }
         } else {
-            mt = new MessageToClient(MessageToClient.NOTYOURTURN, 0, 0, 0, "", ' ');
+            mt = new MessageToClient(MessageToClient.ROOMNOTPLAYING, 0, 0, 0, 0, "", ' ');
         }
         return mt;
     }
@@ -186,61 +188,18 @@ public class Gomoku {
         MessageToClient mc;        
         Player p = getPlayer(playerid);
         if (board.wins(getPlayer(playerid).getSymbol())) {
-            mc = new MessageToClient(MessageToClient.WINNER, 0, 0, playerid, p.getNickname(), p.getSymbol());
+            mc = new MessageToClient(MessageToClient.WINNER, 0, 0, playerid, 0, p.getNickname(), p.getSymbol());
+            status = FINISHED;
         } else {
-            mc = new MessageToClient(MessageToClient.NOWINNER, 0, 0, 0, "", ' ');
+            mc = new MessageToClient(MessageToClient.NOWINNER, 0, 0, 0, 0, "", ' ');
         }
         return mc;
     }
     
     public void initGame() {
-        currentTurn = 0;
+        if (status != PLAYING) {
+            currentTurn = 0;
+            status = PLAYING;
+        }
     }
-    /* public int play(){
-        int i = 0;
-        int winnerIndex = -1;
-        Scanner scanner = new Scanner(System.in);
-        while(i<numPlayer){
-            System.out.println("****************************************************************\n");
-            System.out.println(getPlayer(i).getNickname() + " turn!");
-            int row;
-            int col;
-            do {
-                row = scanner.nextInt();
-                col = scanner.nextInt();
-            } while (!insertMove(row, col,i)); 
-            getBoard().show();
-               
-            if(getBoard().wins(getPlayer(i).getSymbol())){
-                winnerIndex = i;
-                break;
-            }
-            if(i == (getPlayers().length-1)){
-                i = 0;
-            } else {
-                i++;
-            }
-        }
-        return winnerIndex;
-    } */
-    /**
-     * @param args the command line arguments
-     */
-    /* public static void main(String[] args) {
-        //add players
-        System.out.print("Number of player: ");
-        Scanner scanner = new Scanner(System.in);
-        int numPlayer = scanner.nextInt();
-        while(numPlayer<2 || numPlayer>99){
-            System.out.println("Wrong input");
-            numPlayer = scanner.nextInt();
-        }
-        
-        Gomoku gomoku = new Gomoku(numPlayer);
-        gomoku.addPlayers();
-        
-        int winnerIndex = gomoku.play();
-        
-        System.out.println(gomoku.getPlayer(winnerIndex).getNickname() + " wins!");
-    } */
 }

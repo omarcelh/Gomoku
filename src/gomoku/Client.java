@@ -16,6 +16,7 @@ public class Client {
     private String username;
     private char symbol;
     private int playerid;
+    private int roomid;
     
     private Socket socket;    
     private ObjectInputStream inputStream;
@@ -51,7 +52,7 @@ public class Client {
 	new ServerListener().start();
 	
         try {
-            MessageToServer mts = new MessageToServer(MessageToServer.LOGIN,0,0,0,username,symbol);
+            MessageToServer mts = new MessageToServer(MessageToServer.LOGIN,0,0,0,0,username,symbol);
             outputStream.writeObject(mts);
 	} catch (IOException eIO) {
             display("Exception doing login : " + eIO);
@@ -61,8 +62,8 @@ public class Client {
         return true;
     }
 
-    void move(int row, int col) {
-        MessageToServer msg = new MessageToServer(MessageToServer.MOVE, row, col, playerid, username, symbol);
+    void move(int row, int col, int roomid) {
+        MessageToServer msg = new MessageToServer(MessageToServer.MOVE, row, col, playerid, roomid, username, symbol);
         sendMessage(msg);
     }
     
@@ -70,8 +71,23 @@ public class Client {
         gui.printLog(event);
     }
     
-    void startGame() {
-        MessageToServer msg = new MessageToServer(MessageToServer.STARTROOM, 0, 0, 0, "", ' ');
+    void getRoomList() {
+        MessageToServer msg = new MessageToServer(MessageToServer.GETROOMLIST, 0, 0, playerid, 0, "", ' ');
+        sendMessage(msg);
+    }
+
+    void createRoom(String roomname) {
+        MessageToServer msg = new MessageToServer(MessageToServer.CREATEROOM, 0, 0, playerid, 0, roomname, ' ');
+        sendMessage(msg);
+    }
+    
+    void joinRoom(String roomname) {
+        MessageToServer msg = new MessageToServer(MessageToServer.JOINROOM, 0, 0, playerid, 0, roomname, ' ');
+        sendMessage(msg);
+    }
+        
+    void startGame(String roomname) {
+        MessageToServer msg = new MessageToServer(MessageToServer.STARTROOM, 0, 0, 0, 0, roomname, ' ');
         sendMessage(msg);
     }
     
@@ -147,13 +163,14 @@ public class Client {
             switch(msg.getType()) {
                 case MessageToClient.LOGGEDIN:
                 {
-                    playerid = msg.getParam3();
-                    display("Logged in. Your player id is: " + playerid);
+                    playerid = msg.getUserid();
+                    roomid = msg.getRoomid();
+                    display("Logged in to room number " + roomid + ". Your player id is: " + playerid);
                     break;
                 }                
                 case MessageToClient.MOVE:
                 {
-                    gui.addMove(msg.getParam1(), msg.getParam2(), msg.getSymbol());
+                    gui.addMove(msg.getRow(), msg.getCol(), msg.getSymbol());
                     break;
                 }
                 case MessageToClient.MOVEINVALID:
@@ -169,6 +186,11 @@ public class Client {
                 case MessageToClient.WINNER:
                 {
                     display("Winner is: " + msg.getMessage());
+                    break;
+                }
+                case MessageToClient.ROOMLIST:
+                {
+                    gui.showRoomList(msg.getMessage());
                     break;
                 }
             }

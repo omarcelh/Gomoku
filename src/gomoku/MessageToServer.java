@@ -6,56 +6,53 @@
 package gomoku;
 
 import java.io.*;
-/*
- * This class defines the different type of messages that will be exchanged between the
- * Clients and the Server. 
- * When talking from a Java Client to a Java Server a lot easier to pass Java objects, no 
- * need to count bytes or to wait for a line feed at the end of the frame
- */
+
 public class MessageToServer implements Serializable {
 
-	protected static final long serialVersionUID = 1112122200L;
+    static final int LOGIN = 0, GETROOMLIST = 1, CREATEROOM = 2, JOINROOM = 3, STARTROOM = 4, MOVE = 5;
+    private int type;
+    private int row;
+    private int col;
+    private int userid;      
+    private int roomid;
+    private String message;
+    private char symbol;
 
-	static final int LOGIN = 0, GETROOMLIST = 1, CREATEROOM = 2, JOINROOM = 3, STARTROOM = 4, MOVE = 5;
-	private int type;
-	private int param1;
-        private int param2;
-        private int param3;      
-        private String message;
-        private char symbol;
+    MessageToServer(int type, int row, int col, int userid, int roomid, String message, char symbol) {
+        this.type = type;
+        this.row = row;
+        this.col = col;
+        this.userid = userid;
+        this.roomid= roomid;
+        this.message = message;
+        this.symbol = symbol;
+    }
 	
-	MessageToServer(int type, int param1, int param2, int param3, String message, char symbol) {
-		this.type = type;
-		this.param1 = param1;
-                this.param2 = param2;
-                this.param3 = param3;
-                this.message = message;
-                this.symbol = symbol;
-	}
-	
-	public int getType() {
-		return type;
-	}
-        
-        public int getParam1() {
-		return param1;
-	}
-        
-        public int getParam2() {
-		return param2;
-	}
-        
-        public int getParam3() {
-		return param3;
-	}
-        
-        public char getSymbol() {
-		return symbol;
-	}
-        
-        public String getMessage() {
-            return message;
-        }
-        
+    public int getType() {
+        return type;
+    }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public int getUserid() {
+        return userid;
+    }
+
+    public int getRoomid() {
+        return roomid;
+    }
+
+    public char getSymbol() {
+        return symbol;
+    }
+
+    public String getMessage() {
+    return message;
+    }
 }

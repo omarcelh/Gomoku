@@ -14,21 +14,29 @@ import java.io.*;
  */
 public class MessageToClient implements Serializable {
 
-	protected static final long serialVersionUID = 1112122200L;
-
-	static final int WINNER = 0, NOWINNER = 1, MOVE = 2, MOVEINVALID = 3, NOTYOURTURN = 4, LOGGEDIN = 5;
+	static final int    WINNER = 0, 
+                            NOWINNER = 1, 
+                            MOVE = 2, 
+                            MOVEINVALID = 3, 
+                            NOTYOURTURN = 4, 
+                            LOGGEDIN = 5, 
+                            ROOMPLAYING = 6, 
+                            ROOMNOTPLAYING = 7,
+                            ROOMLIST = 8;
 	private int type;
-	private int param1;
-        private int param2;
-        private int param3;      
+	private int row;
+        private int col;
+        private int userid;      
+        private int roomid;
         private String message;
         private char symbol;
 	
-	MessageToClient(int type, int param1, int param2, int param3, String message, char symbol) {
+	MessageToClient(int type, int row, int col, int userid, int roomid, String message, char symbol) {
 		this.type = type;
-		this.param1 = param1;
-                this.param2 = param2;
-                this.param3 = param3;
+		this.row = row;
+                this.col = col;
+                this.userid = userid;
+                this.roomid= roomid;
                 this.message = message;
                 this.symbol = symbol;
 	}
@@ -37,16 +45,20 @@ public class MessageToClient implements Serializable {
 		return type;
 	}
         
-        public int getParam1() {
-		return param1;
+        public int getRow() {
+		return row;
 	}
         
-        public int getParam2() {
-		return param2;
+        public int getCol() {
+		return col;
 	}
         
-        public int getParam3() {
-		return param3;
+        public int getUserid() {
+		return userid;
+	}
+        
+        public int getRoomid() {
+		return roomid;
 	}
         
         public char getSymbol() {
