@@ -168,7 +168,11 @@ public class Gomoku {
             if (row>=0 && row<getBoard().getSize() && col>=0 && col<getBoard().getSize() && getBoard().isTileEmpty(row, col)) {            
                 getBoard().setTile(row,col,p.getSymbol());
                 mt = new MessageToClient(MessageToClient.MOVE, row, col, playerid, p.getNickname(), p.getSymbol());
-                currentTurn = playerid + 1;
+                if(currentTurn == (getPlayers().length-1)){
+                    currentTurn = 0;
+                } else {
+                    currentTurn++;
+                }
             } else {
                 mt = new MessageToClient(MessageToClient.MOVEINVALID, 0, 0, 0, "", ' ');
             }
