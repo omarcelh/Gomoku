@@ -22,7 +22,8 @@ public class MessageToClient implements Serializable {
                             LOGGEDIN = 5, 
                             ROOMPLAYING = 6, 
                             ROOMNOTPLAYING = 7,
-                            ROOMLIST = 8;
+                            ROOMLIST = 8,
+                            CONNECTED = 9;
 	private int type;
 	private int row;
         private int col;
