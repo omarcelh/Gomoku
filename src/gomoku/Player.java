@@ -1,13 +1,14 @@
+package gomoku;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gomoku;
 
 /**
- * Player class which consists of nickname and symbol that are used in game
- * @author acel
+ *
+ * @author Alex
  */
 public class Player {
 
@@ -72,3 +73,33 @@ public class Player {
         this.symbol = symbol;
     }
 }
+/* public class Player {
+    private String name;
+    private int turnid;
+    private static int totalUser = 0;
+
+    public Player(String name) {
+        this.turnid = totalUser++;
+        this.name = name;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public int getTurnId() {
+        return turnid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public static int getTotalUser() {
+        return totalUser;
+    }
+    
+    public static void setTotalUser(int totalUser) {
+        Player.totalUser = totalUser;
+    }
+} */

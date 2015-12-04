@@ -44,7 +44,11 @@ public final class Board {
     public char getTile(int row, int col) {
         return tile[row][col];
     }
-
+    
+    public char getEmptyMark() {
+        return emptyMark;
+    }
+    
     /**
      * tile setter at [i,j]
      * @param row
@@ -93,8 +97,8 @@ public final class Board {
                 setTile(i, j, emptyMark);
             }
         }
-    }
-
+    }    
+    
     /**
      * Print all tiles on the board
      * Create size row and size column of char
