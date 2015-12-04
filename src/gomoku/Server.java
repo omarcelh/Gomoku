@@ -98,7 +98,7 @@ public class Server {
     }
 	
     public static void main(String[] args) {
-        Server server = new Server(1234);
+        Server server = new Server(4848);
         server.start();
     }
     
@@ -199,10 +199,6 @@ public class Server {
                 }
 
                 switch(cm.getType()) {
-                    case MessageToServer.LOGIN:
-                        sendRoomList(cm.getUserid());
-                        display(cm.getUserid());
-                        break;
                     case MessageToServer.GETROOMLIST:
                         sendRoomList(cm.getUserid());
                         break;

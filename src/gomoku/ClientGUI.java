@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -227,6 +226,7 @@ public class ClientGUI extends javax.swing.JFrame {
     private void CreateRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateRoomButtonActionPerformed
         roomname = RoomInput.getText();
         client.createRoom(roomname);
+        
         RoomList.setEnabled(false);
         JoinRoomButton.setEnabled(false);
         RoomInput.setEnabled(false);
@@ -235,15 +235,12 @@ public class ClientGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_CreateRoomButtonActionPerformed
     
     void showRoomList(String rl) {        
-        List<String> roomList = new ArrayList<>(Arrays.asList(rl));
-        DefaultListModel model = new DefaultListModel();
-        for(String temp : roomList)
-            model.addElement(temp);
-        RoomList.setModel(model);
+        List<String> roomList = new ArrayList<>(Arrays.asList(rl.split("\\s+")));
+        RoomList = new javax.swing.JList(roomList.toArray());
     }
     
     private void startClient(String username, char symbol) {
-        int portNumber = 1234;
+        int portNumber = 4848;
         String serverAddress = "localhost";
         client = new Client(serverAddress, portNumber, username, symbol, this);
         
