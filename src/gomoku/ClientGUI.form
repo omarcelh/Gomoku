@@ -26,17 +26,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="BoardPanel" min="-2" pref="721" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="LoginPanel" min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" alignment="0" min="-2" pref="146" max="-2" attributes="0"/>
-                  <Component id="JoinRoomButton" alignment="0" min="-2" pref="146" max="-2" attributes="0"/>
-                  <Component id="RoomInput" min="-2" pref="146" max="-2" attributes="0"/>
-                  <Component id="CreateRoomButton" min="-2" pref="146" max="-2" attributes="0"/>
-                  <Component id="StartButton" min="-2" pref="146" max="-2" attributes="0"/>
+              <Component id="BoardPanel" min="-2" pref="700" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jScrollPane2" pref="0" max="32767" attributes="0"/>
+                  <Component id="LoginPanel" max="32767" attributes="0"/>
+                  <Component id="StartButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="CreateRoomButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="RoomInput" alignment="0" max="32767" attributes="0"/>
+                  <Component id="JoinRoomButton" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
@@ -48,25 +48,24 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="LoginPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" min="-2" pref="388" max="-2" attributes="0"/>
+                      <Component id="jScrollPane2" min="-2" pref="407" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="JoinRoomButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="RoomInput" min="-2" max="-2" attributes="0"/>
+                      <Component id="RoomInput" min="-2" pref="23" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="CreateRoomButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="StartButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="3" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="BoardPanel" max="32767" attributes="0"/>
+                  <Component id="BoardPanel" pref="700" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -227,6 +226,9 @@
         <Property name="toolTipText" type="java.lang.String" value="Insert room name"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RoomInputActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="CreateRoomButton">
       <Properties>
@@ -248,6 +250,10 @@
         <Property name="text" type="java.lang.String" value="Join room"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="JoinRoomButtonMousePressed"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="JoinRoomButtonKeyPressed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

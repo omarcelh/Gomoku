@@ -17,7 +17,8 @@ public class Client {
     private char symbol;
     private int playerid;
     private int roomid;
-    
+    private int roomuid;
+            
     private Socket socket;    
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
@@ -63,7 +64,8 @@ public class Client {
     }
 
     void move(int row, int col, int roomid) {
-        MessageToServer msg = new MessageToServer(MessageToServer.MOVE, row, col, playerid, roomid, username, symbol);
+        System.out.println("MOVE: " + symbol);
+        MessageToServer msg = new MessageToServer(MessageToServer.MOVE, row, col, roomuid, roomid, username, symbol);
         sendMessage(msg);
     }
     
@@ -83,7 +85,7 @@ public class Client {
     
     void joinRoom(String roomname) {
         MessageToServer msg = new MessageToServer(MessageToServer.JOINROOM, 0, 0, playerid, 0, roomname, ' ');
-        sendMessage(msg);
+        sendMessage(msg);        
     }
         
     void startGame(String roomname) {
@@ -161,16 +163,25 @@ public class Client {
         
         private void process(MessageToClient msg) {
             switch(msg.getType()) {
-                case MessageToClient.LOGGEDIN:
+                case MessageToClient.CONNECTED:
                 {
                     playerid = msg.getUserid();
+                    display("Connected to server. Your player ID is: " + playerid);
+                    getRoomList();
+                    break;
+                }
+                case MessageToClient.LOGGEDIN:
+                {
                     roomid = msg.getRoomid();
-                    display("Logged in to room number " + roomid + ". Your player id is: " + playerid);
+                    roomuid = msg.getUserid();
+                    display("Logged in to room " + msg.getMessage());
+                    getRoomList();      
                     break;
                 }                
                 case MessageToClient.MOVE:
                 {
                     gui.addMove(msg.getRow(), msg.getCol(), msg.getSymbol());
+                    System.out.println(msg.getSymbol());
                     break;
                 }
                 case MessageToClient.MOVEINVALID:
@@ -193,6 +204,11 @@ public class Client {
                     gui.showRoomList(msg.getMessage());
                     break;
                 }
+                case MessageToClient.ROOMPLAYING:
+                {
+                    display("Game starts at room " + msg.getMessage());                    
+                }
+                        
             }
         }
     }

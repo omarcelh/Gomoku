@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -25,7 +26,6 @@ import javax.swing.SwingConstants;
  * @author user
  */
 public class ClientGUI extends javax.swing.JFrame {
-
     /**
      * Creates new form ClientGUI
      */
@@ -146,6 +146,11 @@ public class ClientGUI extends javax.swing.JFrame {
         RoomInput.setText("Room name");
         RoomInput.setToolTipText("Insert room name");
         RoomInput.setEnabled(false);
+        RoomInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RoomInputActionPerformed(evt);
+            }
+        });
 
         CreateRoomButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         CreateRoomButton.setText("Create room");
@@ -159,22 +164,32 @@ public class ClientGUI extends javax.swing.JFrame {
         JoinRoomButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         JoinRoomButton.setText("Join room");
         JoinRoomButton.setEnabled(false);
+        JoinRoomButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                JoinRoomButtonMousePressed(evt);
+            }
+        });
+        JoinRoomButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JoinRoomButtonKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(BoardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 721, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LoginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JoinRoomButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(RoomInput, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CreateRoomButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(StartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(BoardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(LoginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(StartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(CreateRoomButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(RoomInput)
+                    .addComponent(JoinRoomButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -183,23 +198,22 @@ public class ClientGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(LoginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(JoinRoomButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(RoomInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(RoomInput, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(CreateRoomButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(StartButton)
-                        .addGap(0, 3, Short.MAX_VALUE))
-                    .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(StartButton))
+                    .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -225,7 +239,7 @@ public class ClientGUI extends javax.swing.JFrame {
 
     private void CreateRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateRoomButtonActionPerformed
         roomname = RoomInput.getText();
-        client.createRoom(roomname);
+        client.createRoom(roomname);        
         
         RoomList.setEnabled(false);
         JoinRoomButton.setEnabled(false);
@@ -233,26 +247,46 @@ public class ClientGUI extends javax.swing.JFrame {
         CreateRoomButton.setEnabled(false);        
         StartButton.setEnabled(true);
     }//GEN-LAST:event_CreateRoomButtonActionPerformed
+
+    private void RoomInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RoomInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_RoomInputActionPerformed
+
+    private void JoinRoomButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JoinRoomButtonKeyPressed
+        
+    }//GEN-LAST:event_JoinRoomButtonKeyPressed
+
+    private void JoinRoomButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JoinRoomButtonMousePressed
+        roomname = (String) RoomList.getSelectedValue();
+        client.joinRoom(roomname);
+        StartButton.setEnabled(true);
+    }//GEN-LAST:event_JoinRoomButtonMousePressed
     
-    void showRoomList(String rl) {        
-        List<String> roomList = new ArrayList<>(Arrays.asList(rl.split("\\s+")));
-        RoomList = new javax.swing.JList(roomList.toArray());
+    void showRoomList(String rl) {
+        RoomList.setEnabled(true);
+        JoinRoomButton.setEnabled(true);
+        RoomInput.setEnabled(true);
+        CreateRoomButton.setEnabled(true);
+        
+        List<String> roomList = new ArrayList<>(Arrays.asList(rl.split(";")));
+        DefaultListModel model = new DefaultListModel();
+        for (String temp : roomList) {
+            model.addElement(temp);
+        }
+        RoomList.setModel(model);
     }
     
     private void startClient(String username, char symbol) {
         int portNumber = 4848;
         String serverAddress = "localhost";
+        System.out.println(symbol);
         client = new Client(serverAddress, portNumber, username, symbol, this);
         
         client.start();
         
         LoginInput.setEnabled(false);
         LoginButton.setEnabled(false);
-        RoomList.setEnabled(true);
-        client.getRoomList();
-        JoinRoomButton.setEnabled(true);
-        RoomInput.setEnabled(true);
-        CreateRoomButton.setEnabled(true);
+        SymbolInput.setEnabled(false);
     }
     
     public void printLog(String msg) {
@@ -261,6 +295,7 @@ public class ClientGUI extends javax.swing.JFrame {
     }
     
     public void addMove(int row, int col, char symbol) {
+        BoardSquares[row][col].setVisible(true);
         BoardSquares[row][col].setText(Character.toString(symbol));
     }
     
@@ -272,11 +307,12 @@ public class ClientGUI extends javax.swing.JFrame {
                 /* Dimension d = new Dimension(5,5);
                 b.setPreferredSize(d); */
                 b.setHorizontalAlignment(SwingConstants.CENTER);
+                b.setBorder(null);
                 b.setMargin(buttonMargin);
                 ImageIcon icon = new ImageIcon(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
                 b.setIcon(icon);
                 b.setBackground(Color.WHITE);
-                Font font = new Font("Tahoma", Font.BOLD, 10);
+                Font font = new Font("Tahoma", Font.PLAIN, 20);
                 b.setFont(font);
                 
                 BoardSquares[j][i] = b;
@@ -286,7 +322,7 @@ public class ClientGUI extends javax.swing.JFrame {
                     @Override
                     public void mousePressed(MouseEvent evt) {
                         client.move(row, col, roomid);
-                        addMove(row, col, client.getSymbol());
+                        //addMove(row, col, client.getSymbol());
                     }
 
                     @Override

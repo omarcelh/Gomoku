@@ -100,7 +100,7 @@ public class Gomoku {
         board = new Board();
         players = new ArrayList<>();
         roomid = ++roomCount;
-    }    
+    }
     
     /**
      * Adding player to list of players by checking previous players first
@@ -149,7 +149,7 @@ public class Gomoku {
         if (players.size() >= 3) {
             status = READY;
         }
-        return players.size();
+        return (players.size()-1);
     }
     
     /**
@@ -160,6 +160,7 @@ public class Gomoku {
      * @return true if move is valid, false otherwise
      */
     public MessageToClient insertMove(int row, int col, int playerid) {
+        System.out.println(currentTurn);
         MessageToClient mt;
         Player p = getPlayer(playerid);
         if (status == PLAYING) {
@@ -167,7 +168,7 @@ public class Gomoku {
                 if (row>=0 && row<getBoard().getSize() && col>=0 && col<getBoard().getSize() && getBoard().isTileEmpty(row, col)) {            
                     getBoard().setTile(row,col,p.getSymbol());
                     mt = new MessageToClient(MessageToClient.MOVE, row, col, playerid, 0, p.getNickname(), p.getSymbol());
-                    if(currentTurn == (getPlayers().size()-1)){
+                    if(currentTurn == (getPlayers().size())-1){
                         currentTurn = 0;
                     } else {
                         currentTurn++;
